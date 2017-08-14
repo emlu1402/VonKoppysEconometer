@@ -1,0 +1,15 @@
+@model Econometer.Data.Models.Vat
+@{
+    ViewData["Title"] = "Radera moms";
+}
+<h3>@ViewData["Title"]</h3>
+
+Är du säker på att du vill radera momssatsen? De produkter som påverkas av denna borttagning kommer få ordet "Borttagen" under moms. Tänk på att exportera data vid behov och att befintliga momssatser går att ändra till valfri siffra eller ord.
+<br>
+<br>
+<form asp-controller="Vat" asp-action="Delete">
+@Html.HiddenFor(model => model.VatID)
+<input type="submit" class="btn btn-default" value="Ja, radera momssatsen" onclick="window.location='@Url.Action("Delete", "Vat") '" />
+</form>
+<br>
+<input type="button" class="btn btn-default" value="Avbryt" onclick="window.location='@Url.Action("Edit", "Vat", new { id = Model.VatID }) '" />

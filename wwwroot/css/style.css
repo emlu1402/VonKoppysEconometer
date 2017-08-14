@@ -1,0 +1,116 @@
+@font-face {
+    font-family: ampersand;
+    src: 
+    local('fonts/ampersand.ttf'),
+    url('fonts/ampersand.ttf');
+}
+@font-face {
+    font-family: bg;
+    src: 
+    local('fonts/bg.otf'),
+    url('fonts/bg.otf');
+}
+@font-face {
+    font-family: econometer;
+    src: 
+    local('fonts/econometer.ttf'),
+    url('fonts/econometer.ttf');
+}
+
+.navbar-brand.logo.menu {
+font-family: ampersand;
+font-size: 55px;
+color: teal;
+}
+
+.footer-bg {
+font-family: bg;
+font-size: 50px;
+color: darkblue;
+display: inline;
+line-height: 0;
+margin: 0;
+}
+
+.footer-ampersand {
+font-family: ampersand;
+font-size: 45px;
+color: darkblue;
+display: inline;
+line-height: 0;
+margin: 0;
+}
+
+.footer-econometer {
+font-family: econometer;
+font-size: 18px;
+color: black;
+display: block;
+margin: 0 0 0 3px;
+}
+
+#footer-logotype {
+position: fixed;    
+bottom: 20px;    
+right: 20px;
+margin-right: 0.6rem;
+background-color: rgba(255, 255, 255, 0.3);
+}
+
+body {
+font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+font-size: 14px;
+color: #333;
+background-color: #fff;
+}
+
+.dt-buttons.btn-group{
+float: right;
+padding-left: 10px;
+}
+
+.btn.btn-default.buttons-collection{
+height: 30px;
+line-height: 1;
+}
+
+.container.body-content {
+padding-top: 8rem;
+}
+
+.dataTables_filter {
+text-align: left !important;
+margin-bottom: 30px;
+}
+
+.dataTables_length {
+float: right;
+}
+
+th {
+padding-bottom: 10px;
+background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+}
+
+.dataTables_info{
+float: left;
+padding-left: 10px;
+margin-top: 4px;
+}
+
+.display.dataTable.no-footer.dtr-inline{
+padding-bottom: 20px;
+}
+
+.dataTables_paginate.paging_simple_numbers{
+background-color: #efefef;
+margin: 0px;
+}
+
+.pagination{
+margin: 5px 5px 0px 0px !important;
+}
+
+.btn.btn-link.navbar-btn.navbar-link{
+padding-right: 3.1rem !important;
+}

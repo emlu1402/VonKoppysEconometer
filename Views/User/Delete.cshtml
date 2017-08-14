@@ -1,0 +1,16 @@
+@model Econometer.Data.Models.User
+
+@{
+    ViewData["Title"] = "Radera användare";
+}
+<h3>@ViewData["Title"]</h3>
+
+Är du säker på att du vill radera användaren? Det som användaren har rapporterat finns kvar efter borttagning (men som "Användare" under det som rapporterats kommer det stå "Borttagen"). Tänk på att exportera data vid behov.
+<br>
+<br>
+<form asp-controller="User" asp-action="Delete">
+@Html.HiddenFor(model => model.UserID)
+<input type="submit" class="btn btn-default" value="Ja, radera användaren" onclick="window.location='@Url.Action("Delete", "User") '" />
+</form>
+<br>
+<input type="button" class="btn btn-default" value="Avbryt" onclick="window.location='@Url.Action("Edit", "User", new { id = Model.UserID }) '" />

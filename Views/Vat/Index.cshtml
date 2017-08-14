@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Moms";
+}
+<table id="vats" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th>Procent</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Vats)
+        {
+            if (item.Percent != "Borttagen")
+            {
+            <tr>
+                <td class="noExport">@item.VatID</td>
+                <td>@item.Percent</td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div id="selectedvat"></div>
+
+<br>
+
+<input type="button" class="btn btn-default" value="Skapa momssats" style="margin-right: 20px;" onclick="window.location='@Url.Action("Add", "Vat")/'" />
+
+<br>
+<br>
+<script>
+    $(document).ready(function () {
+        var selectedvat = $('#selectedvat');
+        var table = $('#vats').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                    }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'Blfrtip',
+            buttons: [{
+                extend: 'collection',
+                text: 'Exportera',
+                buttons: [
+                    { extend: 'copy', text: 'Kopiera', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'excel', text: 'Excel', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'pdf', text: 'PDF', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'print', text: 'Skriv ut', exportOptions: {columns: "thead th:not(.noExport)"} }
+                ],
+            }],
+            });
+            
+            table.column(0).visible(false);
+
+            var data = table.buttons.exportData({
+            columns: ':visible'
+            });
+            
+            $('#vats tbody').on( 'click', 'tr', function () {
+            var columns = table.row(this).data();
+            var vatpercent = columns[1];
+            var vatid = columns[0];
+
+            $('#vatdiv').remove();
+
+            selectedvat.prepend('<div id="vatdiv"><h3>' + vatpercent + '</h3><br><input type="button" class="btn btn-default" value="Ändra uppgifter" onclick="window.location=\'@Url.Action("Edit", "Vat")/' + vatid + '\'" /></div>');
+            })
+
+            setTimeout(function() {
+                $('#vats').show();
+            });
+        });
+</script>
+
+            

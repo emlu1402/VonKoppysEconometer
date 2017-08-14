@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Logga in";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-controller="Account" asp-action="Login">
+<label>Epost</label><br>
+<p>(för testande: "hej" för Admin, "hi" för Konsult)</p>
+<input name="Email"><br>
+<br>
+<label>Lösenord</label><br>
+<p>(för testande: "hej" för Admin, "hi" för Konsult)</p>
+<input name="Password" input type="password"><br>
+<br>
+<button type="submit" class="btn btn-default">Logga in</button>
+</form>
+<br>
+@Html.ValidationMessage("Error")
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

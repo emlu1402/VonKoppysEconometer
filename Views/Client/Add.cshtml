@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Lägg till klient";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+<form asp-controller="Client" asp-action="Add">
+    <label>Namn</label><br>
+    <input name="Name"><br>
+    <br>
+    <label>Organisationsnummer</label><br>
+    <input name="Orgnumber"><br>
+    <br>
+    <label>Epost</label><br>
+    <input name="Email"><br>
+    <br>
+    <label>Telefonnummer</label><br>
+    <input name="Phone"><br>
+    <br>
+    <label>Adress</label><br>
+    <input name="Address"><br>
+    <br>
+    <label>Postnummer/Stad</label><br>
+    <input name="Zip"><br>
+    <br>
+    <label>Kontaktperson</label><br>
+    <input name="Poc"><br>
+    <br>
+    <input type="submit" class="btn btn-default" value="Lägg till klient">
+</form>
+    <br>
+    <br>
+    <br>
+    <br>

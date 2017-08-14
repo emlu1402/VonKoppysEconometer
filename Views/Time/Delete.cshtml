@@ -1,0 +1,18 @@
+@model Econometer.Data.Models.Client
+
+@{
+    ViewData["Title"] = "Radera tid";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+
+Är du säker på att du vill radera den rapporterade tiden? Tänk på att exportera data vid behov.
+<br>
+<br>
+<form asp-controller="Time" asp-action="Delete">
+<input type="submit" class="btn btn-default" value="Ja, radera tiden">
+</form>
+<br>
+<br>
+<input type="button" class="btn btn-default" value="Avbryt" onclick="window.location='@Url.Action("Index", "Client") '" />

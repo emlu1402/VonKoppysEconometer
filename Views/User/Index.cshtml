@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Användare";
+}
+<table id="users" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th>Namn</th>
+            <th>Epost</th>
+            <th>Roll</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Users)
+        {
+            if (item.Account.AccountID != 3)
+            {
+            <tr>
+                <td class="noExport">@item.UserID</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Account.Type</td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>
+<br>
+
+<input type="button" class="btn btn-default" value="Skapa användare" style="margin-right: 20px;" onclick="window.location='@Url.Action("Add", "User")/'" />
+
+<br>
+
+<div id="selecteduser"></div>
+
+<br>
+<script>
+    $(document).ready(function () {
+        var selecteduser = $('#selecteduser');
+        var table = $('#users').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                    }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'Blfrtip',
+            buttons: [{
+                extend: 'collection',
+                text: 'Exportera',
+                buttons: [
+                    { extend: 'copy', text: 'Kopiera', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'excel', text: 'Excel', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'pdf', text: 'PDF', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'print', text: 'Skriv ut', exportOptions: {columns: "thead th:not(.noExport)"} }
+                ],
+            }],
+            });
+            
+            table.column(0).visible(false);
+
+            var data = table.buttons.exportData({
+            columns: ':visible'
+            });
+            
+            $('#users tbody').on( 'click', 'tr', function () {
+            var columns = table.row(this).data();
+            var username = columns[1];
+            var userid = columns[0];
+
+            $('#userdiv').remove();
+
+            selecteduser.prepend('<div id="userdiv"><h3>' + username + '</h3><br><input type="button" class="btn btn-default" value="Ändra uppgifter" onclick="window.location=\'@Url.Action("Edit", "User")/' + userid + '\'" /></div>');
+            })
+
+            setTimeout(function() {
+                $('#users').show();
+            });
+        });
+</script>
+
+            

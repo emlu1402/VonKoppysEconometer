@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = "Rapportering";
+}
+@using Microsoft.AspNetCore.Http;
+<h3>Klienter</h3>
+<table id="clients" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display: none;">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th>Namn</th>
+            <th>Org#</th>
+            <th>Epost</th>
+            <th>Telefon</th>
+            <th>Adress</th>
+            <th>Postnummer/Stad</th>
+            <th>Kontaktperson</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Clients)
+        {
+            <tr>
+                <td class="noExport">@item.ClientID</td>
+                <td>@item.Name</td>
+                <td>@item.Orgnumber</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Address</td>
+                <td>@item.Zip</td>
+                <td>@item.Poc</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="selectedclient"></div>
+
+<script>
+    $(document).ready(function () {
+        var selectedclient = $('#selectedclient');
+        var table = $('#clients').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'Blfrtip', 
+            buttons: [{
+                extend: 'collection',
+                text: 'Exportera',
+                autoclose: 'true',
+                buttons: [
+                    { extend: 'copy', text: 'Kopiera', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'excel', text: 'Excel', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'pdf', text: 'PDF', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'print', text: 'Skriv ut', exportOptions: {columns: "thead th:not(.noExport)"} }
+                ],
+            }],
+        });
+            
+        table.column(0).visible(false);
+
+        var data = table.buttons.exportData({
+            columns: ':visible'
+        });
+
+        $('#clients tbody').on( 'click', 'tr', function () {
+            var columns = table.row(this).data();
+            var clientname = columns[1];
+            var clientid = columns[0];
+            var html = [
+                '<div id="clientdiv"><br>',
+                '   <h4>' + clientname + '</h4>',
+                '   <p>Välj arbete som ska påbörjas eller avslutas:</p>',
+                '   <select class="form-control" id="selectedproduct" name="selectedproduct">',
+                '       @foreach(var item in Model.Products){if(item.Name != "Borttagen"){<option value="@item.ProductID">@item.Name</option>}}',
+                '   </select>',
+                '   <br><input type="button" class="btn btn-default" style="margin-right: 20px;" value="Starta arbete" onclick="startClientId(' + clientid +')" />',
+                '   <input type="button" class="btn btn-default" value="Avsluta arbete" onclick="stopClientId(' + clientid +')" /><br><br>',
+                '   @{if(Context.Session.GetInt32("account") == 1){<input type="button" class="btn btn-default" value="Skapa underlag" style="margin-right: 20px;" onclick="window.location=\'@Url.Action("Invoice", "Time")/' + clientid + '\'" /><input type="button" class="btn btn-default" value="Se skapade underlag" style="margin-right: 20px;" onclick="window.location=\'@Url.Action("Select", "Invoice")/' + clientid + '\'" />@Html.ValidationMessage("Error")<br><br><input type="button" class="btn btn-default" value="Ändra uppgifter" onclick="window.location=\'@Url.Action("Edit", "Client")/' + clientid + '\'" /><br>}}',
+                '<br><br><br></div>',
+                '<div id="clienttimesdiv"></div>'
+            ].join('');
+            
+            $('#clientdiv').remove();
+            $('#clienttimesdiv').remove();
+            
+            selectedclient.prepend(html);
+            
+            $.get('Time/Select/' + clientid + '', null, function(result) {
+                $("#clienttimesdiv").html(result);
+            }, 'html');
+        });
+
+        setTimeout(function() {
+            $('#clients').show();
+        });
+    });
+
+    function startClientId(client) {
+        var e = document.getElementById("selectedproduct");
+        var product = e.options[e.selectedIndex].value;
+        window.location='@Url.Action("Start", "Time")/' + client + '?product=' + product + '';
+    };
+
+    function stopClientId(client) {
+        var e = document.getElementById("selectedproduct");
+        var product = e.options[e.selectedIndex].value;
+        window.location='@Url.Action("Stop", "Time")/' + client + '?product=' + product + '';
+    };  
+</script>
+
+            

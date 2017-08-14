@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Lägg till produkt";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+<div class="col-sm-2">
+    <form asp-controller="Product" asp-action="Add">
+        <label>Namn</label><br>
+        <input name="Name"><br>
+        <br>
+        <label>Moms</label><br>
+        <select class="form-control" name="VatID">
+            @foreach(var item in Model.Vats)
+                {
+                    if(item.Percent != "Borttagen")
+                    {
+                    <option value="@item.VatID">@item.Percent</option>
+                    }
+                } 
+        </select>
+        <br>
+        <br>
+        <input type="submit" class="btn btn-default" value="Lägg till produkt">
+</div>
+    <br>
+    <br>
+    <br>
+    <br>
+
+</form>

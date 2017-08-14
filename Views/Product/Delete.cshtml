@@ -1,0 +1,18 @@
+@model Econometer.Data.Models.Product
+
+@{
+    ViewData["Title"] = "Radera produkt";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+
+Är du säker på att du vill radera produkten? De tillfällen produkten rapporterats finns kvar efter borttagning (men som "Produkt" under det som rapporterats kommer det stå "Borttagen"). Tänk på att exportera data vid behov.
+<br>
+<br>
+<form asp-controller="Produkt" asp-action="Delete">
+@Html.HiddenFor(model => model.ProductID)
+<input type="submit" class="btn btn-default" value="Ja, radera produkten" onclick="window.location='@Url.Action("Delete", "Product") '" />
+</form>
+<br>
+<input type="button" class="btn btn-default" value="Avbryt" onclick="window.location='@Url.Action("Edit", "Product", new { id = Model.ProductID }) '" />

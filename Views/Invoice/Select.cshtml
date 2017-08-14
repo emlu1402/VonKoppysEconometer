@@ -1,0 +1,94 @@
+@using System.Linq;
+
+@{
+    var firstOrDefault = Model.Invoices[0];
+    var firstComponentValue = firstOrDefault.Client.Name;
+    ViewData["Title"] = firstComponentValue;
+
+    bool isAjaxCall = Context.Request.Headers["x-requested-with"]=="XMLHttpRequest";
+    Layout = isAjaxCall ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@media only print {
+        footer, header, .dataTables_wrapper.form-inline.dt-bootstrap.no-footer, .btn.btn-default, #footer-logotype {
+            display: none;
+        }
+</style>
+
+<table id="invoices" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th>Tid</th>
+            <th class="noExport">Html</th>
+            <th>Användare</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Invoices)
+        {
+                if(firstOrDefault.Client.ClientID == item.ClientID)
+                    {
+                        <tr>
+                            <td class="noExport">@item.InvoiceID</td>
+                            <td>@item.Time</td>
+                            <td class="noExport">@item.Html</td>
+                            <td>@item.User.Name</td>
+                        </tr>
+                    }
+        }
+    </tbody>
+</table>
+<br>
+<input type="button" class="btn btn-default" style="margin-right: 20px;" value="Skriv ut" onclick="javascript:window.print()" />
+<div id="selectedinvoice"></div>
+
+<script>
+    function htmlDecode(input){
+        var e = document.createElement('div');
+        e.innerHTML = input;
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    $(document).ready(function () {
+        var selectedinvoice = $('#selectedinvoice');
+        var table = $('#invoices').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                    }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'lfrtip',
+            });
+            
+            table.column(0).visible(false);
+            table.column(2).visible(false);
+
+            $('#invoices tbody').on( 'click', 'tr', function () {
+            var columns = table.row(this).data();
+            var invoicehtml = columns[2];
+            var invoiceid = columns[0];
+
+            $('#invoicediv').remove();
+            
+            selectedinvoice.prepend('<div id="invoicediv"><br><input type="button" class="btn btn-default" value="Radera underlag" onclick="removeInvoice(' + invoiceid + ');" /><br><br>' + htmlDecode(invoicehtml) + '</div>');
+            });
+
+            setTimeout(function() {
+                $('#invoices').show();
+            });
+        });
+    function removeInvoice(invoice) {
+        window.location='@Url.Action("Delete", "Invoice")/' + invoice + '';
+    };
+
+</script>
+
+            

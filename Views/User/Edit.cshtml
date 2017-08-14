@@ -1,0 +1,42 @@
+@model Econometer.Data.Models.User
+
+@{
+    ViewData["Title"] = "Ändra uppgifter för användare";
+}
+<h3>@ViewData["Title"]</h3>
+
+<form asp-controller="User" asp-action="Edit">
+    @Html.HiddenFor(model => model.UserID)
+    <label asp-for="Name">Namn</label><br>
+    <input type="text" asp-for="Name"><br>
+    <br>
+    <label asp-for="Email">Epost</label><br>
+    <input type="text" asp-for="Email"><br>
+    <br>
+    <label>Roll</label><br>
+    <select class="form-control" name="AccountID">
+    @foreach(var item in Model.Accounts)
+        {
+            if(Model.AccountID == item.AccountID)
+            {
+                <option value="@item.AccountID" selected>@item.Type</option>    
+            }
+            else
+            {
+                <option value="@item.AccountID">@item.Type</option>
+            }
+        } 
+    </select>
+    <br>
+    <label>Ge nytt lösenord</label><br>
+    <input name="PasswordClearText" id="PasswordClearText" type="text"><br>
+    <br>
+
+    <input type="submit" class="btn btn-default memberbtn" value="Spara ändringar" onclick="window.location='@Url.Action("Edit", "User") '" />
+
+    <br>
+    <br>
+
+    <input type="button" class="btn btn-default" value="Radera användare" onclick="window.location='@Url.Action("Delete", "User", new { id = Model.UserID }) '" />
+    
+</form>

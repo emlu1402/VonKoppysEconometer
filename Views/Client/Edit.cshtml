@@ -1,0 +1,42 @@
+@model Econometer.Data.Models.Client
+
+@{
+    ViewData["Title"] = "Ändra uppgifter för klient";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+
+<form asp-controller="Client" asp-action="Edit">
+    @Html.HiddenFor(model => model.ClientID)
+    <label asp-for="Orgnumber">Organisationsnummer</label><br>
+    <input type="text" asp-for="Orgnumber"><br>
+    <br>
+    <label asp-for"Name">Namn</label><br>
+    <input type="text" asp-for="Name"><br>
+    <br>
+    <label asp-for="Email">Epost</label><br>
+    <input type="text" asp-for="Email"><br>
+    <br>
+    <label asp-for="Phone">Telefonnummer</label><br>
+    <input type="text" asp-for="Phone"><br>
+    <br>
+    <label asp-for="Address">Adress</label><br>
+    <input type="text" asp-for="Address"><br>
+    <br>
+    <label asp-for="Zip">Postnummer/Stad</label><br>
+    <input type="text" asp-for="Zip"><br>
+    <br>
+    <label asp-for="Poc">Kontaktperson</label><br>
+    <input type="text" asp-for="Poc"><br>
+    
+    <br>
+
+    <input type="submit" class="btn btn-default memberbtn" value="Spara ändringar" onclick="window.location='@Url.Action("Edit", "Client") '" />
+
+    <br>
+    <br>
+
+    <input type="button" class="btn btn-default" value="Radera klient" onclick="window.location='@Url.Action("Delete", "Client", new { id = Model.ClientID }) '" />
+    
+</form>

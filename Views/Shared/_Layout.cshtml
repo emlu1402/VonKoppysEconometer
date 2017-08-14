@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+@using Microsoft.AspNetCore.Http;
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Econometer</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    
+    <environment names="Development,Staging,Production">
+        <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.css"/>
+        <link rel="stylesheet" href="/css/site.min.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+    </environment>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand logo menu">&</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @{if(Context.Session.GetInt32("account") != null)
+                        {
+                        <li><a asp-controller="Client" asp-action="Index">Rapportering</a></li>
+                        }
+                    }
+                    @{if(Context.Session.GetInt32("account") == 1){
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button">Administrera<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a asp-controller="Client" asp-action="Add">Lägg till klient</a></li>
+                                    <li><a asp-controller="Product" asp-action="Index">Produkter</a></li>
+                                    <li><a asp-controller="User" asp-action="Index">Användare</a></li>
+                                    <li><a asp-controller="Vat" asp-action="Index">Moms</a></li>
+                                </ul>
+                        </li>
+                        }
+                    }
+                    <li><a asp-controller="Home" asp-action="Contact">Kontakt</a></li>
+                </ul>
+                @await Html.PartialAsync("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <br>
+        <div id="footer-logotype">
+        <p class="footer-bg">B</p><p class="footer-ampersand">&</p><p class="footer-bg">G</p>
+        <p class="footer-econometer">econometer AB</p>
+        </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

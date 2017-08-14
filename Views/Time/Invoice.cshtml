@@ -1,0 +1,148 @@
+@using System.Linq;
+@{
+    var firstOrDefault = Model.Times[0];
+        if (firstOrDefault != null) 
+        {
+            var firstComponentValue = firstOrDefault.Client.Name;
+            ViewData["Title"] = firstComponentValue;
+        }
+    bool isAjaxCall = Context.Request.Headers["x-requested-with"]=="XMLHttpRequest";
+    Layout = isAjaxCall ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Ofakturerade tider</h3>
+
+<table id="times" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th class="noExport">Klient</th>
+            <th>Starttid</th>
+            <th>Sluttid</th>
+            <th>Produkt</th>
+            <th class="noExport">Beskrivning</th>
+            <th>Timmar</th>
+            <th>Skapat av</th>
+            <th class="noExport">Adress</th>
+            <th class="noExport">Postnummer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Times)
+        {
+            @if (!@item.Invoiced)
+                {
+                    <tr>
+                    <td class="noExport">@item.TimeID</td>
+                    <td class="noExport">@item.Client.Name</td>
+                    <td>@item.Starttime</td>
+                    <td>@item.Endtime</td>
+                    <td>@item.Product.Name</td>
+                    <td class="noExport">@item.Description</td>
+                    <td>@item.Hours</td>
+                    <td>@item.User.Name</td>
+                    <td class="noExport">@item.Client.Address</td>
+                    <td class="noExport">@item.Client.Zip</td>
+                    </tr>
+                }
+        }
+    </tbody>
+</table>
+<br>
+<input type="button" class="btn btn-default"  style="margin-right: 20px;" value="Skapa underlag för markerade tider" onclick="Invoice()" /> <input type="button" class="btn btn-default" style="margin-right: 20px;" value="Rensa valda tider" onclick="clearTimes()" />
+<br>
+<br>
+<div id="generatedinvoice">
+    <div id="clientname"></div>
+    <div id="selectedtime"></div>
+</div>
+<br>
+<br>
+<script>
+    $(document).ready(function () {
+        var client = $('#clientname');
+        var info = $('#selectedtime');
+        var table = $('#times').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                    }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'Blfrtip',
+            buttons: [{
+                extend: 'collection',
+                text: 'Exportera',
+                buttons: [
+                    { extend: 'copy', text: 'Kopiera', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'excel', text: 'Excel', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'pdf', text: 'PDF', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'print', text: 'Skriv ut', exportOptions: {columns: "thead th:not(.noExport)"} }
+                ],
+            }],
+            });
+            
+            table.column(0).visible(false);
+            table.column(1).visible(false);
+            table.column(5).visible(false);
+            table.column(8).visible(false);
+            table.column(9).visible(false);
+
+            var data = table.buttons.exportData({
+                columns: ':visible'
+            });
+
+            $('#times tbody').on( 'click', 'tr', function () {
+                var columns = table.row(this).data();
+                var timeid = columns[0];
+                var timeclient = columns[1];
+                var timestart = columns[2];  
+                var timeend = columns[3];
+                var timeproduct = columns[4];
+                var timedescription = columns[5];
+                var timehours = columns[6];
+                var timeaddress = columns[8];
+                var timezip = columns[9];
+
+                client.html('<h3 style="text-align:right;">'+ timeclient +'<br>' + timeaddress  + '<br> ' + timezip +' </h3><br><br>');
+                info.append('<div class="timegen"><h4>' + timestart + ' ' + timeproduct + ' - ' + timehours + ' timmar</h4><p>' + timedescription + '</p></div>');
+            })
+            
+            setTimeout(function() {
+                $('#times').show();
+            });
+        });
+        
+        function Invoice() {
+            var html = '';
+            
+            $('link').each(function() {
+                html += this.outerHTML;
+            });
+            
+            html += $("#generatedinvoice").html();
+
+            $.ajax({
+                url: '@(Url.Action("PostInvoice", "Time"))',
+                method: 'POST',
+                data: {
+                    id: '@firstOrDefault.Client.ClientID',
+                    user: '1',
+                    html: html
+                },
+                success: function() {
+                    $(window.open().document.body).html(html);
+                },
+                error: function() {
+                    alert('Något gick fel när sidan skulle hämtas. Försök igen senare.');
+                }
+            });
+        };
+    function clearTimes(){
+        $('.timegen').remove();
+    };
+</script>

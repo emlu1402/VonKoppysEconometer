@@ -1,0 +1,18 @@
+@model Econometer.Data.Models.Invoice
+
+@{
+    ViewData["Title"] = "Radera underlag";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+
+Är du säker på att du vill radera underlaget? Tänk på att exportera data vid behov.
+<br>
+<br>
+<form asp-controller="Invoice" asp-action="Delete">
+@Html.HiddenFor(model => model.InvoiceID)
+<input type="submit" class="btn btn-default" value="Ja, radera underlaget" onclick="window.location='@Url.Action("Delete", "Product") '" />
+</form>
+<br>
+<input type="button" class="btn btn-default" value="Avbryt" onclick="window.location='@Url.Action("Select", "Invoice", new { id = Model.InvoiceID }) '" />

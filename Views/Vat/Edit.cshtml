@@ -1,0 +1,21 @@
+@model Econometer.Data.Models.Vat
+
+@{
+    ViewData["Title"] = "Ändra uppgifter för moms";
+}
+<h3>@ViewData["Title"]</h3>
+<form asp-controller="Vat" asp-action="Edit">
+    @Html.HiddenFor(model => model.VatID)
+    <label asp-for="Percent">Procent</label><br>
+    <input type="text" asp-for="Percent"><br>
+    <br>
+    </select>
+    <br>
+    <input type="submit" class="btn btn-default memberbtn" value="Spara ändringar" onclick="window.location='@Url.Action("Edit", "Vat") '" />
+
+    <br>
+    <br>
+
+    <input type="button" class="btn btn-default" value="Radera momssats" onclick="window.location='@Url.Action("Delete", "Vat", new { id = Model.VatID }) '" />
+    
+</form>

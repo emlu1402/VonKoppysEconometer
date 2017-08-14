@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Tider";
+    bool isAjaxCall = Context.Request.Headers["x-requested-with"]=="XMLHttpRequest";
+    Layout = isAjaxCall ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.js"></script>
+
+<br>
+
+<table id="times" class="table table-striped table-bordered" cellspacing="0" width="100%" style="display:none">
+    <thead>
+        <tr>
+            <th class="noExport">Id</th>
+            <th class="noExport">Klient</th>
+            <th>Starttid</th>
+            <th>Sluttid</th>
+            <th>Produkt</th>
+            <th class="noExport">Beskrivning</th>
+            <th>Timmar</th>
+            <th>Fakturerat</th>
+            <th>Skapat av</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Times)
+        {
+            <tr>
+                <td class="noExport">@item.TimeID</td>
+                <td class="noExport">@item.Client.Name</td>
+                <td>@item.Starttime</td>
+                <td>@item.Endtime</td>
+                <td>@item.Product.Name</td>
+                <td class="noExport">@item.Description</td>
+                <td>@item.Hours</td>
+                @{
+                    if (!@item.Invoiced)
+                    {
+                    <td> </td>
+                    } 
+                    else
+                    {
+                    <td><span class="glyphicon glyphicon-ok"></span></td>
+                    }
+                }
+                <td>@item.UserID</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="selectedtime"></div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#times').show();
+        var info = $('#selectedtime');
+        var table = $('#times').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.12/i18n/Swedish.json',
+                select: {
+                    rows: ""
+                    }
+            },
+            select: {
+                style: 'single'
+            },
+            responsive: true,
+            fixedHeader: true,
+            dom: 'Blfrtip',
+            buttons: [{
+                extend: 'collection',
+                text: 'Exportera',
+                buttons: [
+                    { extend: 'copy', text: 'Kopiera', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'excel', text: 'Excel', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'pdf', text: 'PDF', exportOptions: {columns: "thead th:not(.noExport)"} },
+                    { extend: 'print', text: 'Skriv ut', exportOptions: {columns: "thead th:not(.noExport)"} }
+                ],
+            }],
+            });
+            
+            table.column(0).visible(false);
+            table.column(1).visible(false);
+            table.column(5).visible(false);
+
+            var data = table.buttons.exportData({
+            columns: ':visible'
+            });
+            
+            $('#times tbody').on( 'click', 'tr', function () {
+            var columns = table.row(this).data();
+            var timeid = columns[0];
+            var timeclient = columns[1];
+            var timestart = columns[2];  
+            var timeend = columns[3];
+            var timeproduct = columns[4];
+            var timedescription = columns[5];
+
+            $('#timediv').remove();
+
+            info.prepend('<div id="timediv"><h4>' + timeclient + ' - ' + timeproduct + '</h4><br><p>' + timedescription + '</p><br><br><input type="button" class="btn btn-default" value="Ändra uppgifter" onclick="window.location=\'@Url.Action("Edit", "Time")/' + timeid + '\'" /><br><br><input type="button" class="btn btn-default" value="Markera som fakturerad" onclick="window.location=\'@Url.Action("SetInvoice", "Time")/' + timeid + '\'" /></div>');
+            })
+
+            setTimeout(function() {
+                $('#times').show();
+            });
+    });
+</script>
+
+                        <!--var st = new Date();
+                        var et = new Date();
+                        st = Date.parse(timestart);
+                        et = Date.parse(timeend);
+                        var calct = new Date();
+                        calct = (et-st)/60/1000;
+                        var h = Math.floor(calct / 60);
+                        var m = (Math.round(calct/15) * 15) % 60;-->

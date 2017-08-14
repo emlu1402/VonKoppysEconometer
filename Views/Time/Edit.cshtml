@@ -1,0 +1,75 @@
+@model Econometer.Data.Models.Time
+
+@{
+    ViewData["Title"] = "Ändra tid";
+}
+<br>
+<h3>@ViewData["Title"]</h3>
+<br>
+<div class="col-sm-3">
+    <form asp-controller="Time" asp-action="Edit" id="EditTime">
+        @Html.HiddenFor(model => model.TimeID)
+        @Html.HiddenFor(model => model.ClientID)
+        <label asp-for="Starttime">Starttid</label><br>
+        <input type="text" asp-for="Starttime"><br>
+        <br>
+        <label asp-for"Endtime">Sluttid</label><br>
+        <input type="text" asp-for="Endtime"><br>
+        <br>
+        <input type="button" class="btn btn-default" value="Räkna ut timmar" onclick="window.location='@Url.Action("Calculate", "Time", new { id = Model.TimeID, edit = Model.TimeID})'" />
+        <br>
+        <br>
+        <label asp-for"Hours">Arbetade timmar</label><br>
+        <input type="text" asp-for="Hours"><br>
+        <br>
+        <label asp-for="Description">Beskrivning</label><br>
+        <textarea style="height:200px; width:500px; resize:none;" asp-for="Description"></textarea><br>
+        <br>
+        <label asp-for="Invoiced">Fakturerat</label><br>
+        <input type="checkbox" asp-for="Invoiced" class = "form-control checkbox-inline"><br>
+        <br>
+        <label>Produkt</label><br>
+        <select class="form-control" name="ProductID">
+        @foreach(var item in Model.Products)
+            {
+                if(Model.ProductID == item.ProductID)
+                {
+                    <option value="@item.ProductID" selected>@item.Name</option>    
+                }
+                else
+                {
+                    <option value="@item.ProductID">@item.Name</option>
+                }
+            } 
+        </select>
+        <br>
+        <label>Skapat av</label><br>
+        <select class="form-control" name="UserID">
+        @foreach(var item in Model.Users)
+            {
+                if(Model.UserID == item.UserID && item.Name != "Borttagen")
+                {
+                    <option value="@item.UserID" selected>@item.Name</option>    
+                }
+                else if(Model.UserID == item.UserID && item.Name == "Borttagen")
+                {
+                    <option value="@item.UserID" selected>@item.Name</option>
+                }
+                else if (item.Name != "Borttagen")
+                {
+                    <option value="@item.UserID">@item.Name</option>
+                }
+            } 
+        </select>
+        <br>
+        <input type="submit" class="btn btn-default" value="Spara ändringar" onclick="window.location='@Url.Action("Edit", "Time") '" />
+
+        <br>
+        <br>
+
+        <input type="button" class="btn btn-default" value="Radera tid" onclick="window.location='@Url.Action("Delete", "Time", new { id = Model.TimeID }) '" />
+    </form>
+
+        <br>
+        <br>
+</div>
